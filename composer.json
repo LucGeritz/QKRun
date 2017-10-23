@@ -1,0 +1,25 @@
+{
+    "name": "tigrez/qkrun",
+    "description": "A very small library",
+    "type": "library",
+    "keywords": ["script","script runner"],
+    "homepage": "https://github.com/LucGeritz",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Luc Geritz",
+            "email": "tigrezoft@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Tigrez\\QKRun\\": "proj/classes"
+        }
+    },  
+    "require": {
+        "php": ">=5.4.0",
+        "css-crush/css-crush": "*.*",
+        "tigrez/iexpect": "*",
+        "tedivm/jshrink": "~1.0"
+    }
+}
