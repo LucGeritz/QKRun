@@ -1,3 +1,7 @@
 a{
+	/* some info */
 	color: #40bf59;
+	margin-left: 10px;
+	font-family: qkrun;
+	border-collapse: inherit;
 }

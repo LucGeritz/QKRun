@@ -41,7 +41,6 @@ class testQKRun implements Tigrez\IExpect\ITest{
 		     If I execute the crush command without any config data
 		*/
 		$args = [0 => 'crush'];
-		$args['site'] = 'dummy';
 		$config = [] ;
 				
 		$qkrun = new Tigrez\QKRun\QKRun($config, $args, $output);
@@ -50,29 +49,12 @@ class testQKRun implements Tigrez\IExpect\ITest{
 		/* ... the command will fail (in an unspecified way) */
 		$I->Expect($qkrun->getStatus())->equals(false);
 	
-		/* I expect that..........................................................................................
-		     If I execute the crush command with all config data specified
-		     but no site argument
-		*/
-		$config = ['cssdir_in'=>self::CSSDIR_IN, 'cssdir_out'=>self::CSSDIR_OUT];
-		$args   = [0 => 'crush'];
-		
-		$qkrun = new Tigrez\QKRun\QKRun($config, $args, $output);
-		
-		/* ... the command will fail */
-		$I->Expect($qkrun->getStatus())->equals(false);
-		$lines = $output->get();
-		
-		/* ... with a message about missing the site argument */
-		$I->Expect($lines[0])->caseInsensitive()->contains('missing');
-		$I->Expect($lines[0])->caseInsensitive()->contains('site');
-
 		/* I expect that....................
 		     If I execute the crush command with all config and args data specified
 		     except the cssdir_in config parameter
 		*/
 		$config = ['cssdir_out'=>self::CSSDIR_OUT];
-		$args = [0 => 'crush', 'site'=>'dummy'];
+		$args = [0 => 'crush'];
 		$qkrun = new Tigrez\QKRun\QKRun($config, $args, $output);
 		$lines = $output->get();
 
@@ -87,7 +69,7 @@ class testQKRun implements Tigrez\IExpect\ITest{
 		     except the cssdir_out config setting
 		*/
 		$config = ['cssdir_in'=>self::CSSDIR_IN];
-		$args = [0 => 'crush', 'site'=>'dummy'];
+		$args = [0 => 'crush'];
 		$qkrun = new Tigrez\QKRun\QKRun($config, $args, $output);
 		$lines = $output->get();
 
@@ -103,7 +85,7 @@ class testQKRun implements Tigrez\IExpect\ITest{
 		     but cssdir_in specifying a wrong dir
 		*/
 		$config = ['cssdir_out'=>self::CSSDIR_OUT, 'cssdir_in'=>'I/Donot/Exist'];
-		$args = [0 => 'crush', 'site'=>'dummy'];
+		$args = [0 => 'crush'];
 		$qkrun = new Tigrez\QKRun\QKRun($config, $args, $output);
 		$lines = $output->get();
 		
@@ -120,7 +102,7 @@ class testQKRun implements Tigrez\IExpect\ITest{
 		     but cssdir_out specifying a wrong dir
 		*/
 		$config = ['cssdir_out'=>'Wish/You/Were/Here', 'cssdir_in'=>self::CSSDIR_IN];
-		$args = [0 => 'crush', 'site'=>'dummy'];
+		$args = [0 => 'crush'];
 		$qkrun = new Tigrez\QKRun\QKRun($config, $args, $output);
 		$lines = $output->get();
 		
@@ -135,7 +117,7 @@ class testQKRun implements Tigrez\IExpect\ITest{
 		     If I execute the crush command with all config and args data specified
 		*/
 		$config = ['cssdir_out'=>self::CSSDIR_OUT, 'cssdir_in'=>self::CSSDIR_IN];
-		$args = [0 => 'crush', 'site'=>'dummy'];
+		$args = [0 => 'crush'];
 		$qkrun = new Tigrez\QKRun\QKRun($config, $args, $output);
 		$lines = $output->get();
 		
@@ -147,8 +129,24 @@ class testQKRun implements Tigrez\IExpect\ITest{
 		$I->expect(self::CSSDIR_OUT.'002-min.css')->isFile();
 		$I->expect(self::CSSDIR_OUT.'003-min.css')->isFile();
 		$I->expect(self::CSSDIR_OUT.'.csscrush')->isFile();
+
+		$minifiedSize = filesize(self::CSSDIR_OUT.'001-min.css');
 		
+		/* I expect that..........................................................................................
+		     If I execute the crush command with all config and args data specified
+		     and the optional arg --nominify specified
+		*/
+		$config = ['cssdir_out'=>self::CSSDIR_OUT, 'cssdir_in'=>self::CSSDIR_IN];
+		$args = [0 => 'crush', 'nominify'=>true];
+		$qkrun = new Tigrez\QKRun\QKRun($config, $args, $output);
+		$lines = $output->get();
+				
+		/* ... the command will succeed */
+		$I->expect($qkrun->getStatus())->equals(true);
+				
 		//var_dump($lines);
+		/* ... and the crushed file 001-min.css to be larger then its minified version */
+		$I->expect($minifiedSize<filesize(self::CSSDIR_OUT.'001.css'))->equals(true);
 				
 	}
 	
@@ -160,7 +158,6 @@ class testQKRun implements Tigrez\IExpect\ITest{
 		     If I execute the minify command without any config data
 		*/
 		$args = [0 => 'minify'];
-		$args['site'] = 'dummy';
 		$config = [] ;
 				
 		$qkrun = new Tigrez\QKRun\QKRun($config, $args, $output);
@@ -172,28 +169,11 @@ class testQKRun implements Tigrez\IExpect\ITest{
 		$I->Expect($qkrun->getStatus())->equals(false);
 	
 		/* I expect that..........................................................................................
-		     If I execute the crush command with all config data specified
-		     but no site argument
-		*/
-		$config = ['jsdir_in'=>self::JSDIR_IN, 'jsdir_out'=>self::JSDIR_OUT];
-		$args   = [0 => 'minify'];
-		
-		$qkrun = new Tigrez\QKRun\QKRun($config, $args, $output);
-		
-		/* ... the command will fail */
-		$I->Expect($qkrun->getStatus())->equals(false);
-		$lines = $output->get();
-		
-		/* ... with a message about missing the site argument */
-		$I->Expect($lines[0])->caseInsensitive()->contains('missing');
-		$I->Expect($lines[0])->caseInsensitive()->contains('site');
-die(); //@@@
-		/* I expect that..........................................................................................
 		     If I execute the crush command with all config and args data specified
 		     except the jsdir_in config parameter
 		*/
 		$config = ['jsdir_out'=>self::JSDIR_OUT];
-		$args = [0 => 'minify', 'site'=>'dummy'];
+		$args = [0 => 'minify'];
 		$qkrun = new Tigrez\QKRun\QKRun($config, $args, $output);
 		$lines = $output->get();
 
@@ -208,7 +188,7 @@ die(); //@@@
 		     except the jsdir_out config setting
 		*/
 		$config = ['jsdir_in'=>self::JSDIR_IN];
-		$args = [0 => 'minify', 'site'=>'dummy'];
+		$args = [0 => 'minify'];
 		$qkrun = new Tigrez\QKRun\QKRun($config, $args, $output);
 		$lines = $output->get();
 
@@ -224,7 +204,7 @@ die(); //@@@
 		     but jsdir_in specifying a wrong dir
 		*/
 		$config = ['jsdir_out'=>self::JSDIR_OUT, 'jsdir_in'=>'I/Donot/Exist'];
-		$args = [0 => 'minify', 'site'=>'dummy'];
+		$args = [0 => 'minify'];
 		$qkrun = new Tigrez\QKRun\QKRun($config, $args, $output);
 		$lines = $output->get();
 		
@@ -241,13 +221,13 @@ die(); //@@@
 		     but jsdir_out specifying a wrong dir
 		*/
 		$config = ['jsdir_out'=>'Wish/You/Were/Here', 'jsdir_in'=>self::JSDIR_IN];
-		$args = [0 => 'minify', 'site'=>'dummy'];
+		$args = [0 => 'minify'];
 		$qkrun = new Tigrez\QKRun\QKRun($config, $args, $output);
 		$lines = $output->get();
 		
 		/* ... the command will fail */
 		$I->expect($qkrun->getStatus())->equals(false);
-		
+
 		/* ... with a message about the jsdir_in value not being a directory */
 		$I->Expect($lines[0])->caseInsensitive()->contains('jsdir_out');
 		$I->Expect($lines[0])->caseInsensitive()->contains('not a valid dir');
@@ -256,7 +236,7 @@ die(); //@@@
 		     If I execute the crush command with all config and args data specified
 		*/
 		$config = ['jsdir_out'=>self::JSDIR_OUT, 'jsdir_in'=>self::JSDIR_IN];
-		$args = [0 => 'minify', 'site'=>'dummy'];
+		$args = [0 => 'minify'];
 		$qkrun = new Tigrez\QKRun\QKRun($config, $args, $output);
 		$lines = $output->get();
 		
@@ -267,8 +247,6 @@ die(); //@@@
 		$I->expect(self::JSDIR_OUT.'001-min.js')->isFile();
 		$I->expect(self::JSDIR_OUT.'002-min.js')->isFile();
 		$I->expect(self::JSDIR_OUT.'003-min.js')->isFile();
-		
-		//var_dump($lines);
 				
 	}
 	// The only method ITest forces you to implement is run()	

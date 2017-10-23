@@ -103,7 +103,6 @@ class QKRun{
 			'config: cssdir_in' => 'the dir with the source css files',
 			'config: cssdir_out' => 'the dir where crushed files are written to',
 			'--nominify' => "(optional) specify this if you don't want the output files minified, default false",
-			'--site=name'=> "(optional) specify on what site to operate this command, default is the site set by the select command" 
 		];
 	}
 	
@@ -112,7 +111,6 @@ class QKRun{
 			'minify js files',
 			'config: jsdir_in' => 'the dir with the source js files',
 			'config: jsdir_out' => 'the dir where minified files are written to',
-			'--site=name'=> "(optional) specify on what site to operate this command, default is the site set by the select command" 
 		];
 	}
 
@@ -185,7 +183,6 @@ class QKRun{
 	public function do_crush($config, $args){
 		
 		if (!$this->check_config($config,['cssdir_in','cssdir_out'])) return false;
-		if(!$this->check_args($args,['site'])) return false;
 		
 		if(!$this->check_dir(['cssdir_in'=>$config['cssdir_in'], 'cssdir_out'=>$config['cssdir_out']])) return false;	
 		
