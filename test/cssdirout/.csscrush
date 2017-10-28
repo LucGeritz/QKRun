@@ -1,0 +1,182 @@
+{
+    "001-min.css": {
+        "imports": [
+
+        ],
+        "datem_sum": 1509112422,
+        "options": {
+            "minify": true,
+            "output_dir": "cssdirout\/",
+            "output_file": "001-min",
+            "formatter": null,
+            "versioning": true,
+            "boilerplate": true,
+            "vars": [
+
+            ],
+            "cache": true,
+            "context": null,
+            "asset_dir": null,
+            "doc_root": null,
+            "vendor_target": "all",
+            "rewrite_import_urls": true,
+            "plugins": null,
+            "settings": [
+
+            ],
+            "stat_dump": false,
+            "source_map": false,
+            "newlines": "use-platform"
+        }
+    },
+    "002-min.css": {
+        "imports": [
+
+        ],
+        "datem_sum": 1508777142,
+        "options": {
+            "minify": true,
+            "output_dir": "cssdirout\/",
+            "output_file": "002-min",
+            "formatter": null,
+            "versioning": true,
+            "boilerplate": true,
+            "vars": [
+
+            ],
+            "cache": true,
+            "context": null,
+            "asset_dir": null,
+            "doc_root": null,
+            "vendor_target": "all",
+            "rewrite_import_urls": true,
+            "plugins": null,
+            "settings": [
+
+            ],
+            "stat_dump": false,
+            "source_map": false,
+            "newlines": "use-platform"
+        }
+    },
+    "003-min.css": {
+        "imports": [
+
+        ],
+        "datem_sum": 1508777142,
+        "options": {
+            "minify": true,
+            "output_dir": "cssdirout\/",
+            "output_file": "003-min",
+            "formatter": null,
+            "versioning": true,
+            "boilerplate": true,
+            "vars": [
+
+            ],
+            "cache": true,
+            "context": null,
+            "asset_dir": null,
+            "doc_root": null,
+            "vendor_target": "all",
+            "rewrite_import_urls": true,
+            "plugins": null,
+            "settings": [
+
+            ],
+            "stat_dump": false,
+            "source_map": false,
+            "newlines": "use-platform"
+        }
+    },
+    "001.css": {
+        "imports": [
+
+        ],
+        "datem_sum": 1509112422,
+        "options": {
+            "minify": false,
+            "output_dir": "cssdirout\/",
+            "output_file": "001",
+            "formatter": null,
+            "versioning": true,
+            "boilerplate": true,
+            "vars": [
+
+            ],
+            "cache": true,
+            "context": null,
+            "asset_dir": null,
+            "doc_root": null,
+            "vendor_target": "all",
+            "rewrite_import_urls": true,
+            "plugins": null,
+            "settings": [
+
+            ],
+            "stat_dump": false,
+            "source_map": false,
+            "newlines": "use-platform"
+        }
+    },
+    "002.css": {
+        "imports": [
+
+        ],
+        "datem_sum": 1508777142,
+        "options": {
+            "minify": false,
+            "output_dir": "cssdirout\/",
+            "output_file": "002",
+            "formatter": null,
+            "versioning": true,
+            "boilerplate": true,
+            "vars": [
+
+            ],
+            "cache": true,
+            "context": null,
+            "asset_dir": null,
+            "doc_root": null,
+            "vendor_target": "all",
+            "rewrite_import_urls": true,
+            "plugins": null,
+            "settings": [
+
+            ],
+            "stat_dump": false,
+            "source_map": false,
+            "newlines": "use-platform"
+        }
+    },
+    "003.css": {
+        "imports": [
+
+        ],
+        "datem_sum": 1508777142,
+        "options": {
+            "minify": false,
+            "output_dir": "cssdirout\/",
+            "output_file": "003",
+            "formatter": null,
+            "versioning": true,
+            "boilerplate": true,
+            "vars": [
+
+            ],
+            "cache": true,
+            "context": null,
+            "asset_dir": null,
+            "doc_root": null,
+            "vendor_target": "all",
+            "rewrite_import_urls": true,
+            "plugins": null,
+            "settings": [
+
+            ],
+            "stat_dump": false,
+            "source_map": false,
+            "newlines": "use-platform"
+        }
+    }
+}
