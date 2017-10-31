@@ -25,6 +25,7 @@ class testQKRun implements Tigrez\IExpect\ITest{
 		}
 		return $size;
 	}
+	
 	private function emptyDir($dir){
 		$files = glob($dir.'*'); // get all file names
 
@@ -40,6 +41,11 @@ class testQKRun implements Tigrez\IExpect\ITest{
 		$this->emptyDir(self::CSSDIR_CON);
 		$this->emptyDir(self::JSDIR_OUT);
 		$this->emptyDir(self::JSDIR_CON);
+		
+		if(file_exists('site')){
+			unlink('site');
+		}	
+	
 	
 	}
 	
@@ -494,6 +500,85 @@ class testQKRun implements Tigrez\IExpect\ITest{
 
 }
 
+	protected function testSelect(Tigrez\IExpect\Assertion $I){
+		
+		$output = new StrOutputter();
+		
+		/* I expect that..........................................................................................
+		     If I execute the select command without any config data
+		*/
+		$args = [0 => 'select', 'site' => 'dummy'];
+		
+		$config = [] ;
+				
+		$qkrun = new Tigrez\QKRun\QKRun($config, $args, $output);
+		$output->get(); // empty the output
+
+		/* ... the command will fail (in an unspecified way) */
+		$I->Expect($qkrun->getStatus())->equals(false);
+		/* ... and no site file is generated  */
+		$I->Expect('site')->not()->isFile('site');
+
+		/* I expect that..........................................................................................
+		     If I execute the select command with all config data but no site argument
+		*/
+		$args = [0 => 'select'];
+		$config = ['sites'=>['site1'=>'']] ;
+
+		$qkrun = new Tigrez\QKRun\QKRun($config, $args, $output);
+		$lines = $output->get();
+		
+		/* ... the command will fail  */
+		$I->Expect($qkrun->getStatus())->equals(false);
+		
+		/* ... with a message about a missing site parameter */
+		$I->Expect($lines[0])->caseInsensitive()->contains('site');
+		$I->Expect($lines[0])->caseInsensitive()->contains('missing');
+		/* ... and no site file is generated  */
+		$I->Expect('site')->not()->isFile('site');
+
+		/* I expect that..........................................................................................
+		     If I execute the select command with all config data and a site argument
+		     but the value of the site argument is not one in sites list
+		*/
+		$args = [0 => 'select', 'site'=>'site9'];
+		$config = [ 'sites' => ['site1'=>'1', 'site2'=>'2']] ;
+
+		$qkrun = new Tigrez\QKRun\QKRun($config, $args, $output);
+		$lines = $output->get();
+		
+		/* ... the command will fail  */
+		$I->Expect($qkrun->getStatus())->equals(false);
+		
+		/* ... with a message about the site not in the sites parameters */
+		$I->Expect($lines[0])->caseInsensitive()->contains('not defined');
+		$I->Expect($lines[0])->caseInsensitive()->contains('in sites');
+		/* ... and no site file is generated  */
+		$I->Expect('site')->not()->isFile('site');
+
+		/* I expect that..........................................................................................
+		     If I execute the select command with all config data and a site argument
+		     and the value of the site argument is one in sites list
+		*/
+		$args = [0 => 'select', 'site'=>'site2'];
+		$config = [ 'sites' => ['site1'=>'1', 'site2'=>'2']] ;
+
+		$qkrun = new Tigrez\QKRun\QKRun($config, $args, $output);
+		$lines = $output->get();
+		
+		/* ... the command will succeed  */
+		$I->Expect($qkrun->getStatus())->equals(true);
+		
+		/* ... and a site file is generated  */
+		$I->Expect('site')->isFile();
+		/* ... containing the name of the selected site */
+		$I->Expect(file_get_contents('site'))->equals('site2');
+		//var_dump($lines);
+		
+			
+	}
+	
+	
 	// The only method ITest forces you to implement is run()	
 	public function run(Tigrez\IExpect\Assertion $I){
 		
@@ -503,5 +588,6 @@ class testQKRun implements Tigrez\IExpect\ITest{
 		$this->testJSMin($I);	
 		$this->testConCSS($I);
 		$this->testConJS($I);
+		$this->testSelect($I);
 	}	
 }
