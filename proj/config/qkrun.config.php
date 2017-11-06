@@ -5,7 +5,5 @@
 // the only mandatory entry in this file.
 return [
 
-	'sites'       => ['ninja'=>'config/ninja.config.php',
-				
-					],
+	'sites'       => ['donkey'=>'config/donkey.config.php',],
 ];

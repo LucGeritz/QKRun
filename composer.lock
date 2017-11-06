@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "ce532d589edc965ee09b9d70744ee821",
+    "content-hash": "358125bf75f6ea1a6803264fd7163e9f",
     "packages": [
         {
             "name": "css-crush/css-crush",
@@ -112,7 +112,9 @@
                 "minifier"
             ],
             "time": "2015-07-04T07:35:09+00:00"
-        },
+        }
+    ],
+    "packages-dev": [
         {
             "name": "tigrez/iexpect",
             "version": "1.1.2",
@@ -155,7 +157,6 @@
             "time": "2016-12-04T08:51:55+00:00"
         }
     ],
-    "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": [],

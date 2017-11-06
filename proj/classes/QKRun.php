@@ -4,7 +4,7 @@ namespace Tigrez\QKRun;
 class QKRun{
 
 	const FATAL = true;
-	const VERSION = '1.0';
+	const VERSION = '1.0.0';
 	const STATUS_OK = true;
 	const STATUS_NOK = false;
 	
@@ -56,6 +56,14 @@ class QKRun{
 		return true;
 	}
 	
+	protected function has_sitecontext($args){
+		if(!isset($args['site'])){
+			$this->tell("select a site first with the select command", self::FATAL);
+			return false;
+		}
+		return true;
+	}
+	
 	protected function show_help(array $txt){
 		foreach($txt as $key=>$val){
 			if($key===0){
@@ -97,6 +105,27 @@ class QKRun{
 		return ['show the available commands'];
 	}
 	
+	protected function help_conjs(){
+		return [
+			'concatenate javascript files',
+			'config: jsconc_in' => 'the dir with the source js files',
+			'config: jsconc_out' => 'the dir where concatenated js file is written to',
+			'config: jsconc_name' => 'the name of the concatenated js file',
+			'--sort' => "(optional) specify this if you want the files being processed in alphabetic order, default false",
+		];
+		
+	}
+	protected function help_concss(){
+		return [
+			'concatenate css files',
+			'config: cssconc_in' => 'the dir with the source css files',
+			'config: cssconc_out' => 'the dir where concatenated css file is written to',
+			'config: cssconc_name' => 'the name of the concatenated css file',
+			'--sort' => "(optional) specify this if you want the files being processed in alphabetic order, default false",
+		];
+	}	
+	
+	
 	protected function help_crush(){
 		return [
 			'process css files with css-crush (preprocess with optional minify)',
@@ -121,7 +150,11 @@ class QKRun{
 			'--site=name' => 'the site to select as default'  
 		];
 	}	
-	
+	protected function help_run(){
+		return[
+			'run is a combination of crush, minify, concat css and concat js. See individual commands.' 
+		];
+	}
 	public function getStatus(){
 		return $this->status;
 	}
@@ -153,6 +186,8 @@ class QKRun{
 	* minify command
 	*/
 	public function do_minify($config, $args){
+	
+		if (!$this->has_sitecontext($args)) return false;
 		
 		if(!$this->check_config($config, ['jsdir_in','jsdir_out'])) return false;
 		if(!$this->check_dir(['jsdir_in'=>$config['jsdir_in'], 'jsdir_out'=>$config['jsdir_out']])) return false;	
@@ -181,6 +216,8 @@ class QKRun{
 	* crush command
 	*/
 	public function do_crush($config, $args){
+	
+		if (!$this->has_sitecontext($args)) return false;
 		
 		if (!$this->check_config($config,['cssdir_in','cssdir_out'])) return false;
 		
@@ -234,6 +271,8 @@ class QKRun{
 	* conjs command
 	*/
 	public function do_conjs($config, $args){
+	
+		if (!$this->has_sitecontext($args)) return false;
 		
 		if(!$this->check_config($config, ['jsconc_in', 'jsconc_out', 'jsconc_name'])) return false;
 		if(!$this->check_dir(['jsconc_in' => $config['jsconc_in'], 'jsconc_out'=> $config['jsconc_out'] ])) return false;
@@ -250,6 +289,8 @@ class QKRun{
 	*/
 	public function do_concss($config, $args){
 		
+		if (!$this->has_sitecontext($args)) return false;
+		
 		if(!$this->check_config($config, ['cssconc_in', 'cssconc_out', 'cssconc_name'])) return false;
 		if(!$this->check_dir(['cssconc_in' => $config['cssconc_in'], 'cssconc_out'=> $config['cssconc_out'] ])) return false;
 		
@@ -257,7 +298,7 @@ class QKRun{
 	
 		$this->concatFiles($config['cssconc_in'],$config['cssconc_out'],$config['cssconc_name'],'css',$sort);	
 		
-		return false;
+		return true;
 	}
 	
 	/**
@@ -268,10 +309,11 @@ class QKRun{
 	* - concat
 	*/
 	public function do_run($config, $args){
-		$this->do_crush($config, $args);
-		$this->do_minify($config, $args);
-		$this->do_concss($config, $args);	
-		$this->do_conjs($config, $args);	
+		if(!$this->do_crush($config, $args)) return false;
+		if(!$this->do_minify($config, $args)) return false;
+		if(!$this->do_concss($config, $args)) return false;	
+		if(!$this->do_conjs($config, $args)) return false;
+		return true;	
 	}
 	
 

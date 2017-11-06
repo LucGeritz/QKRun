@@ -19,7 +19,10 @@
     "require": {
         "php": ">=5.4.0",
         "css-crush/css-crush": "*.*",
-        "tigrez/iexpect": "*",
         "tedivm/jshrink": "~1.0"
+    }
+    ,  
+    "require-dev": {
+        "tigrez/iexpect": "*"
     }
 }
