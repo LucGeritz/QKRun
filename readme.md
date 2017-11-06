@@ -3,7 +3,7 @@
 1.0.0 First usable version
 
 ---
-##What is it?
+## What is it?
 QK:Run is a little taskrunner that automates the processing of your project's javascript and css-files.
 I've built it for my own use on small solo php-projects but, who knows, it might come in handy for someone else. In the current version there's no built-in *watch* feature to watch a given set of directories and/or files which limits the practical use for now. 
 
@@ -16,11 +16,11 @@ Maybe not much yet but QK:Run is made to be easilly extended to do more things.
 
 *Crushing* by the way means preprocessing *and* (optional) minification of css files. See http://the-echoplex.net/csscrush/ 
  
-##How to run 
+## How to run 
 QK:Run is implemented as command-line PHP. It needs PHP5.4 or higher. It expects Linux-style commands so I for example use it in a GitBash window on a windows machine. 
 The QK:Run main file is `qk.php` in the `proj` folder. I've made an alias `qk` to start this so I don't have to type `php qk.php` all the time. From now on in my examples i'll use this short variant `qk` as well.
 
-##Setup
+## Setup
 The idea is to have one installation of QK:Run on your computer. This installation can serve multiple projects (called *sites* in QK:Run), one at a time. You can *point* QK:Run to the site currently used with the `select` command.
 
 In the `proj` folder you'll find a `config` folder. In here you'll find the a `qkrun.config.php`. This is the *global* config file which should return a php associative array of key-value pairs. *key* is the name of the setting and *value* the value of the setting.  
@@ -38,7 +38,7 @@ The site config file is called the *local* config file. Like the global config f
 An important concept about QK:Run config files is that they are merged. Settings of the global and local file are combined. If the same setting occurs in both files the local setting overrides the global setting.  The whole idea is that you define settings which are the same for all your sites in the global config file and site specific settings in the local config file. With the current set of settings you probably won't be using this feature a lot but I expect it to become more relavant in future versions.
 
 
-##Getting started
+## Getting started
 So to get started the first thing you'll want to do is to fill the `sites` setting in the `qkrun.config.php` file. Then you'll want to create and populate the local config file(s) you defined in the `sites` setting.
 
 If we use the previous example of 
@@ -79,31 +79,31 @@ select the site working on. Must be one of the acronyms in `sites`.
 
 `--site=<siteacronym>` specifies the site you want to select.
 
-**help**
+**help**    
 show available commands
 
-**crush**
+**crush**    
 *crushes* the css-files in `cssdir_in` to `cssdir_out`. If `xxx.css` is the input file the output file names becomes `xxx-min.css` if minified or stays `xxx.css` if no minification.  
 
 `--nominify` specify this if you don't want minification. Minification is the default.     
 
-**minify**
+**minify**    
 minify your javascript files in `jsdir_in` and write them to `jsdir_out`.
 
-**jscon**
+**jscon**    
 concat your javascript files in `jsconc_in` to one file in `jsconc_out` with the name `jsconc_name`. 
 
 `--sort` specify this if you want the files processed sorted by alphabet. Default no sorting.
 
-**csscon**
+**csscon**    
 concat your css files in `cssconc_in` to one file in `cssconc_out` with the name `cssconc_name`.
 
 `--sort` specify this if you want the files processed sorted by alphabet. Default no sorting.
 
-**run**     
+**run**         
 this is a combination of crush, minify, concss and conjs. See the individual commands.
 
-##Future enhancements    
+## Future enhancements    
 - A watch functionality, really important to make QK:Run interesting
 - Implementation of commands by interfaces to allow for to switch to your own prefered module for implementation of a given command.
 - Unit test functionality
