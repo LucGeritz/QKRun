@@ -1,6 +1,6 @@
 {
     "name": "tigrez/qkrun",
-    "description": "A very small library",
+    "description": "Taskrunner",
     "type": "library",
     "keywords": ["script","script runner"],
     "homepage": "https://github.com/LucGeritz",
