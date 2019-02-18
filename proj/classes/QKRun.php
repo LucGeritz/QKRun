@@ -1,6 +1,9 @@
 <?php
 namespace Tigrez\QKRun;
 
+use Lurker\Event\FilesystemEvent;
+use Lurker\ResourceWatcher;
+
 class QKRun{
 
 	const FATAL = true;
@@ -317,6 +320,31 @@ class QKRun{
 	}
 	
 
+	public function do_watch($config, $args){
+
+		$watcher = new ResourceWatcher;
+		$watcher->track('css', $config['cssdir_in']);
+		$this->tell('Watching '.$config['cssdir_in']);
+
+		$watcher->track('js', $config['jsdir_in']);
+		$this->tell('Watching '.$config['jsdir_in']);
+		
+        $watcher->addListener('css', function (FilesystemEvent $event) use($config, $args){
+	        $this->tell('Detected '.$event->getTypeString().' on '.$event->getResource());
+        	if(!$this->do_crush($config, $args)) return false;
+			if(!$this->do_concss($config, $args)) return false;	
+        });
+
+		$watcher->addListener('js', function (FilesystemEvent $event) use($config, $args){
+	        $this->tell('Detected '.$event->getTypeString().' on '.$event->getResource());
+        	if(!$this->do_minify($config, $args)) return false;
+			if(!$this->do_conjs($config, $args)) return false;	
+        });
+		$watcher->start();
+		
+		return true;
+	}
+	
 	public function setOutputter(IOutputter $outputter){
 		
 		$this->outputter = $outputter;  

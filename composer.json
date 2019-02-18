@@ -19,7 +19,8 @@
     "require": {
         "php": ">=5.4.0",
         "css-crush/css-crush": "*.*",
-        "tedivm/jshrink": "~1.0"
+        "tedivm/jshrink": "~1.0",
+        "henrikbjorn/lurker": "1.2.0"
     }
     ,  
     "require-dev": {
