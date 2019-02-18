@@ -1,21 +1,20 @@
 # QK:Run
 **Version history**   
+1.1.0 Added watch functionality
 1.0.0 First usable version
 
----
 ## What is it?
 QK:Run is a little taskrunner that automates the processing of your project's javascript and css-files.
-I've built it for my own use on small solo php-projects but, who knows, it might come in handy for someone else. In the current version there's no built-in *watch* feature to watch a given set of directories and/or files which limits the practical use for now. 
+I've built it for my own use on small solo php-projects but, who knows, it might come in handy for someone else. In the 1.1.0 version a  *watch* feature to watch has been added! 
 
-In version 1.0 QK:Run can
+In version 1.1 QK:Run can
 - minify javascript files
 - crush CSS files (with CSS~Crush)
 - concat javascript and css files
-
-Maybe not much yet but QK:Run is made to be easilly extended to do more things.
+- watch for changes in your javascript and css dir
 
 *Crushing* by the way means preprocessing *and* (optional) minification of css files. See http://the-echoplex.net/csscrush/ 
- 
+
 ## How to run 
 QK:Run is implemented as command-line PHP. It needs PHP5.4 or higher. It expects Linux-style commands so I for example use it in a GitBash window on a windows machine. 
 The QK:Run main file is `qk.php` in the `proj` folder. I've made an alias `qk` to start this so I don't have to type `php qk.php` all the time. From now on in my examples i'll use this short variant `qk` as well.
@@ -103,7 +102,9 @@ concat your css files in `cssconc_in` to one file in `cssconc_out` with the name
 **run**         
 this is a combination of crush, minify, concss and conjs. See the individual commands.
 
+**watch**
+watches your cssdir_in and jsdir_in for changes.
+
 ## Future enhancements    
-- A watch functionality, really important to make QK:Run interesting
 - Implementation of commands by interfaces to allow for to switch to your own prefered module for implementation of a given command.
 - Unit test functionality
