@@ -158,6 +158,11 @@ class QKRun{
 			'run is a combination of crush, minify, concat css and concat js. See individual commands.' 
 		];
 	}
+	protected function help_watch(){
+		return[
+			'watches your jsdir_in and cssdir_in dirs for changes and starts a crush + concat (in case of css) or minify + concat (in case of js).' 
+		];
+	}
 	public function getStatus(){
 		return $this->status;
 	}
