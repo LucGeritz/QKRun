@@ -13,8 +13,8 @@ if(isset($config['sites'][$parms[ 'site']])){
 	$config = array_merge($config,$siteConfig);
 }
 else{
-	// echo "*** No definition in config found for site ".$parms['site'];
-	//die(); 
+	echo "*** No definition in config found for site ".$parms['site'];
+	die(); 
 }
 
 $qkrun = new Tigrez\QKRun\QKRun($config, $parms);

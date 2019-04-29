@@ -7,13 +7,13 @@ use Lurker\ResourceWatcher;
 class QKRun{
 
 	const FATAL = true;
-	const VERSION = '1.0.0';
+	const VERSION = '1.2.0';
 	const STATUS_OK = true;
 	const STATUS_NOK = false;
 	
 	protected $outputter;
 	protected $status = self::STATUS_OK;
-		
+
 	protected function tell($msg, $fatal = false){
 		$prefix = $fatal ? '*** ' : '';
 		$this->outputter->output($prefix.$msg.PHP_EOL);
@@ -28,6 +28,34 @@ class QKRun{
 		}	
 		return $receivedArgs;
 	}
+
+	
+	protected function getFlow($flowType,array $args){
+		
+		$flow = isset($args[$flowType]) ? strtoupper($args[$flowType]) : 'MC';
+		if(!in_array($flow,['MC','CM'])){
+			$this->tell("$flowType should be either MC or CM");
+			return false;
+		}
+		return $flow;	
+	}
+	
+	protected function normalizePaths($config){
+
+		foreach(['csscrush_in','csscrush_out','jsmin_in','jsmin_out','jsconc_in','jsconc_out','cssconc_in','cssconc_out' ] as $configKey){
+			if(isset($config[$configKey])){
+				$realpath = realpath($config[$configKey]).DIRECTORY_SEPARATOR;
+				// illegal paths are ignored, they will pop up later in the flow with a decent 'dir error' message
+				if($realpath) $config[$configKey] = $realpath;  			
+			}
+		}
+		return $config;	
+
+	}
+	
+	protected function empty_dir($dir){
+		// if(is_dir($dir)) array_map('unlink', glob("$dir*"));	
+	}	
 	
 	protected function check_dir(array $dirs){
 		foreach($dirs as $dirKey=>$dirVal){
@@ -132,8 +160,8 @@ class QKRun{
 	protected function help_crush(){
 		return [
 			'process css files with css-crush (preprocess with optional minify)',
-			'config: cssdir_in' => 'the dir with the source css files',
-			'config: cssdir_out' => 'the dir where crushed files are written to',
+			'config: csscrush_in' => 'the dir with the source css files',
+			'config: csscrush_out' => 'the dir where crushed files are written to',
 			'--nominify' => "(optional) specify this if you don't want the output files minified, default false",
 		];
 	}
@@ -141,8 +169,8 @@ class QKRun{
 	protected function help_minify(){
 		return [
 			'minify js files',
-			'config: jsdir_in' => 'the dir with the source js files',
-			'config: jsdir_out' => 'the dir where minified files are written to',
+			'config: jsmin_in' => 'the dir with the source js files',
+			'config: jsmin_out' => 'the dir where minified files are written to',
 		];
 	}
 
@@ -155,12 +183,16 @@ class QKRun{
 	}	
 	protected function help_run(){
 		return[
-			'run is a combination of crush, minify, concat css and concat js. See individual commands.' 
+			'run is a combination of crush, minify, concat css and concat js. See individual commands for parameters.',
+			'--jsflow' => 'Default flow is MC, Minify then Concat, use CM for Concat then Minify',
+			'--cssflow' => 'Default flow is MC, Minify/Crush then Concat, use CM for Concat then Minify/Crush' 
 		];
 	}
 	protected function help_watch(){
 		return[
-			'watches your jsdir_in and cssdir_in dirs for changes and starts a crush + concat (in case of css) or minify + concat (in case of js).' 
+			'watches your jsmin_in and csscrush_in dirs for changes and starts a crush + concat (in case of css) or minify + concat (in case of js).',
+			'--jsflow' => 'Default flow is MC, Minify then Concat, use CM for Concat then Minify',
+			'--cssflow' => 'Default flow is MC, Minify/Crush then Concat, use CM for Concat then Minify/Crush' 
 		];
 	}
 	public function getStatus(){
@@ -192,25 +224,29 @@ class QKRun{
 
 	/**
 	* minify command
+	* minifies javascripts in jsmin_in, output in jsmin_out
 	*/
 	public function do_minify($config, $args){
 	
 		if (!$this->has_sitecontext($args)) return false;
 		
-		if(!$this->check_config($config, ['jsdir_in','jsdir_out'])) return false;
-		if(!$this->check_dir(['jsdir_in'=>$config['jsdir_in'], 'jsdir_out'=>$config['jsdir_out']])) return false;	
+		if(!$this->check_config($config, ['jsmin_in','jsmin_out'])) return false;
 		
-		if ($handle = opendir($config['jsdir_in'])) {
+		if(!$this->check_dir(['jsmin_in'=>$config['jsmin_in'], 'jsmin_out'=>$config['jsmin_out']])) return false;	
+		
+		$this->empty_dir($config['jsmin_out']);
+		
+		if ($handle = opendir($config['jsmin_in'])) {
 			
         	while (($file = readdir($handle)) !== false) {
         		
-        		if(is_file($config['jsdir_in'].$file) && pathinfo($file, PATHINFO_EXTENSION)=='js'){
-					$this->tell('minifying '.$config['jsdir_in'].$file);
+        		if(is_file($config['jsmin_in'].$file) && pathinfo($file, PATHINFO_EXTENSION)=='js'){
+					$this->tell('minifying '.$config['jsmin_in'].$file);
 					$output_file = pathinfo($file ,PATHINFO_FILENAME).'-min';
 			
-					$minifiedCode = \JShrink\Minifier::minify(file_get_contents($config['jsdir_in'].$file));		
+					$minifiedCode = \JShrink\Minifier::minify(file_get_contents($config['jsmin_in'].$file));		
 					
-					file_put_contents($config['jsdir_out'].$output_file.'.js', $minifiedCode);
+					file_put_contents($config['jsmin_out'].$output_file.'.js', $minifiedCode);
 					
 				}
         		
@@ -227,20 +263,22 @@ class QKRun{
 	
 		if (!$this->has_sitecontext($args)) return false;
 		
-		if (!$this->check_config($config,['cssdir_in','cssdir_out'])) return false;
+		if (!$this->check_config($config,['csscrush_in','csscrush_out'])) return false;
 		
-		if(!$this->check_dir(['cssdir_in'=>$config['cssdir_in'], 'cssdir_out'=>$config['cssdir_out']])) return false;	
+		if(!$this->check_dir(['csscrush_in'=>$config['csscrush_in'], 'csscrush_out'=>$config['csscrush_out']])) return false;	
 		
 		$minify = isset($args['nominify']) ? !$args['nominify'] : true; 
+
+		$this->empty_dir($config['csscrush_out']);
 		
-		if ($handle = opendir($config['cssdir_in'])) {
+		if ($handle = opendir($config['csscrush_in'])) {
         	while (($file = readdir($handle)) !== false) {
         		
-        		if(is_file($config['cssdir_in'].$file) && pathinfo($file, PATHINFO_EXTENSION)=='css'){
-					$this->tell('crushing '.$config['cssdir_in'].$file);
+        		if(is_file($config['csscrush_in'].$file) && pathinfo($file, PATHINFO_EXTENSION)=='css'){
+					$this->tell('crushing '.$config['csscrush_in'].$file);
 					$output_file = pathinfo($file ,PATHINFO_FILENAME).($minify ? '-min' : '');
-     				csscrush_file( $config['cssdir_in'].$file, ['minify'=>$minify, 
-																'output_dir'=>$config['cssdir_out'], 
+     				csscrush_file( $config['csscrush_in'].$file, ['minify'=>$minify, 
+																'output_dir'=>$config['csscrush_out'], 
 																'output_file'=> $output_file ] );	
 				}
         		
@@ -267,6 +305,7 @@ class QKRun{
 				$help = str_replace('do_','help_',$method);
 				if(method_exists($this,$help)){
 					$this->show_help($this->$help());
+					$this->tell('');
 				}
 			}
 						
@@ -287,6 +326,8 @@ class QKRun{
 		
 		$sort = isset($args['sort']);	
 	
+	    $this->empty_dir($config['jsconc_out']);
+		
 		$this->concatFiles($config['jsconc_in'],$config['jsconc_out'],$config['jsconc_name'],'js',$sort);	
 		
 		return true;
@@ -304,6 +345,8 @@ class QKRun{
 		
 		$sort = isset($args['sort']);	
 	
+		$this->empty_dir($config['cssconc_out']);
+		
 		$this->concatFiles($config['cssconc_in'],$config['cssconc_out'],$config['cssconc_name'],'css',$sort);	
 		
 		return true;
@@ -317,33 +360,88 @@ class QKRun{
 	* - concat
 	*/
 	public function do_run($config, $args){
-		if(!$this->do_crush($config, $args)) return false;
-		if(!$this->do_minify($config, $args)) return false;
-		if(!$this->do_concss($config, $args)) return false;	
-		if(!$this->do_conjs($config, $args)) return false;
+	
+		$cssflow = $this->getFlow('cssflow',$args);
+		if(!$cssflow) return false;
+		
+	    $jsflow = $this->getFlow('jsflow',$args);
+		if(!$jsflow) return false;
+		
+		for($step = 0; $step <2 ; $step++ ){
+			
+			if($cssflow[$step]=='M'){
+				// M for minify = 'crush'
+				if(!$this->do_crush($config, $args)) return false;
+			}
+			else{
+				if(!$this->do_concss($config, $args)) return false;	
+				
+			}	
+			
+			if($jsflow[$step]=='M'){
+				if(!$this->do_minify($config, $args)) return false;
+			}
+			else{
+				if(!$this->do_conjs($config, $args)) return false;		
+			}
+		}
+		
 		return true;	
 	}
 	
 
 	public function do_watch($config, $args){
 
+		$cssflow = $this->getFlow('cssflow',$args);
+		if(!$cssflow) return false;
+		
+	    $jsflow = $this->getFlow('jsflow',$args);
+		if(!$jsflow) return false;
+		
 		$watcher = new ResourceWatcher;
-		$watcher->track('css', $config['cssdir_in']);
-		$this->tell('Watching '.$config['cssdir_in']);
+			
+		if($cssflow=='MC'){
+			$watcher->track('css', $config['csscrush_in']);
+			$this->tell('Watching '.$config['csscrush_in']);
+		}
+		else{
+			$watcher->track('css', $config['cssconc_in']);
+			$this->tell('Watching '.$config['cssconc_in']);
+		}	
 
-		$watcher->track('js', $config['jsdir_in']);
-		$this->tell('Watching '.$config['jsdir_in']);
+		if($jsflow == 'MC'){
+			$watcher->track('js', $config['jsmin_in']);
+			$this->tell('Watching '.$config['jsmin_in']);
+		}
+		else{
+			$watcher->track('js', $config['jsonc_in']);
+			$this->tell('Watching '.$config['jsconc_in']);
+		}
 		
         $watcher->addListener('css', function (FilesystemEvent $event) use($config, $args){
 	        $this->tell('Detected '.$event->getTypeString().' on '.$event->getResource());
-        	if(!$this->do_crush($config, $args)) return false;
-			if(!$this->do_concss($config, $args)) return false;	
-        });
+        	for($step = 0; $step <2 ; $step++ ){
+        		if($cssflow[$step]=='M'){
+					// M for minify = 'crush'
+					if(!$this->do_crush($config, $args)) return false;
+				}
+				else{
+					if(!$this->do_concss($config, $args)) return false;	
+				}
+			}	
+	     });
 
 		$watcher->addListener('js', function (FilesystemEvent $event) use($config, $args){
 	        $this->tell('Detected '.$event->getTypeString().' on '.$event->getResource());
-        	if(!$this->do_minify($config, $args)) return false;
-			if(!$this->do_conjs($config, $args)) return false;	
+        	for($step = 0; $step <2 ; $step++ ){
+        		if($jsflow[$step]=='M'){
+					// M for minify
+					if(!$this->do_minify($config, $args)) return false;
+				}
+				else{
+					if(!$this->do_conjs($config, $args)) return false;	
+				}
+			}
         });
 		$watcher->start();
 		
@@ -359,7 +457,7 @@ class QKRun{
 	public function __construct($config, $args, $outputter=null){
 		
 		$config = $config === null ? [] : $config;
-		
+				
 		$this->setOutputter($outputter === null ? new DftOutputter() : $outputter);
 		
 		$this->tell("QK:Run ".self::VERSION." ". (isset($args['site']) ? '['.$args['site'].']' : '(no site selected)'));
@@ -372,7 +470,7 @@ class QKRun{
 		}
 		
 		$method = 'do_'.$command;
-		
+
 		$this->$method($config, $args);
 		$this->tell($this->status ? '..Ok' : '..Nok');			
 	}

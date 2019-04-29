@@ -6,12 +6,12 @@ include "StrOutputter.php";
 
 class testQKRun implements Tigrez\IExpect\ITest{
 
-	const CSSDIR_IN = 'cssdirin/';
-	const CSSDIR_OUT = 'cssdirout/';
-	const CSSDIR_CON = 'cssdirconc/';
+	const CSSCRUSH_IN    = 'cssdirin/';
+	const CSSCRUSH_OUT   = 'cssdirout/';
+	const CSSDIR_CON     = 'cssdirconc/';
 	const CSSDIR_CONNAME = 'test-con.css';
-	const JSDIR_IN       = 'jsdirin/';
-	const JSDIR_OUT      = 'jsdirout/';
+	const JSMIN_IN       = 'jsdirin/';
+	const JSMIN_OUT      = 'jsdirout/';
 	const JSDIR_CON      = 'jsdirconc/';
 	const JSDIR_CONNAME  = 'test-con.js';
 
@@ -37,15 +37,14 @@ class testQKRun implements Tigrez\IExpect\ITest{
 	
 	private function initializeTests(){
 		
-		$this->emptyDir(self::CSSDIR_OUT);
+		$this->emptyDir(self::CSSCRUSH_OUT);
 		$this->emptyDir(self::CSSDIR_CON);
-		$this->emptyDir(self::JSDIR_OUT);
+		$this->emptyDir(self::JSMIN_OUT);
 		$this->emptyDir(self::JSDIR_CON);
 		
 		if(file_exists('site')){
 			unlink('site');
 		}	
-	
 	
 	}
 	
@@ -57,7 +56,7 @@ class testQKRun implements Tigrez\IExpect\ITest{
 			If I execute the crush command with no site context
 		*/
 		$args = [0 => 'crush'];
-		$config = ['cssdir_in'=>'somedir', 'cssdir_out'=>'somedir'];
+		$config = ['csscrush_in'=>'somedir', 'csscrush_out'=>'somedir'];
 		$qkrun = new Tigrez\QKRun\QKRun($config, $args, $output);
 
 		/* ... the command will fail */
@@ -67,6 +66,8 @@ class testQKRun implements Tigrez\IExpect\ITest{
 		/* ... with a message about having no site */
 		$I->Expect($lines[0])->caseInsensitive()->contains('select a site first');
 	
+		
+		
 		/* I expect that....................
 		     If I execute the crush command without any config data
 		*/
@@ -80,24 +81,24 @@ class testQKRun implements Tigrez\IExpect\ITest{
 		$I->Expect($qkrun->getStatus())->equals(false);
 		/* I expect that....................
 		     If I execute the crush command with all config and args data specified
-		     except the cssdir_in config parameter
+		     except the csscrush_in config parameter
 		*/
-		$config = ['cssdir_out'=>self::CSSDIR_OUT];
+		$config = ['csscrush_out'=>self::CSSCRUSH_OUT];
 		$args = [0 => 'crush', 'site'=>'dummy'];
 		$qkrun = new Tigrez\QKRun\QKRun($config, $args, $output);
 		$lines = $output->get();
 
 		$I->expect($qkrun->getStatus())->equals(false);
 		
-		/* ... with a message about missing the cssdir_in config setting */
+		/* ... with a message about missing the csscrush_in config setting */
 		$I->Expect($lines[0])->caseInsensitive()->contains('missing');
-		$I->Expect($lines[0])->caseInsensitive()->contains('cssdir_in');
+		$I->Expect($lines[0])->caseInsensitive()->contains('csscrush_in');
 		
 		/* I expect that..........................................................................................
 		     If I execute the crush command with all config and args data specified
-		     except the cssdir_out config setting
+		     except the csscrush_out config setting
 		*/
-		$config = ['cssdir_in'=>self::CSSDIR_IN];
+		$config = ['csscrush_in'=>self::CSSCRUSH_IN];
 		$args = [0 => 'crush', 'site'=>'dummy'];
 		$qkrun = new Tigrez\QKRun\QKRun($config, $args, $output);
 		$lines = $output->get();
@@ -105,32 +106,33 @@ class testQKRun implements Tigrez\IExpect\ITest{
 		/* ... the command will fail */
 		$I->expect($qkrun->getStatus())->equals(false);
 		
-		/* ... with a message about missing the cssdir_out config setting */
+		/* ... with a message about missing the csscrush_out config setting */
 		$I->Expect($lines[0])->caseInsensitive()->contains('missing');
-		$I->Expect($lines[0])->caseInsensitive()->contains('cssdir_out');
+		$I->Expect($lines[0])->caseInsensitive()->contains('csscrush_out');
 
 		/* I expect that..........................................................................................
 		     If I execute the crush command with all config and args data specified
-		     but cssdir_in specifying a wrong dir
+		     but csscrush_in specifying a wrong dir
 		*/
-		$config = ['cssdir_out'=>self::CSSDIR_OUT, 'cssdir_in'=>'I/Donot/Exist'];
+		$config = ['csscrush_out'=>self::CSSCRUSH_OUT, 'csscrush_in'=>'I/Donot/Exist'];
 		$args = [0 => 'crush', 'site'=>'dummy'];
+		
 		$qkrun = new Tigrez\QKRun\QKRun($config, $args, $output);
 		$lines = $output->get();
 		
 		/* ... the command will fail */
 		$I->expect($qkrun->getStatus())->equals(false);
-		
-		/* ... with a message about the cssdir_in value not being a directory */
-		$I->Expect($lines[0])->caseInsensitive()->contains('cssdir_in');
+
+		/* ... with a message about the csscrush_in value not being a directory */
+		$I->Expect($lines[0])->caseInsensitive()->contains('csscrush_in');
 		$I->Expect($lines[0])->caseInsensitive()->contains('not a valid dir');
 		
 
 		/* I expect that..........................................................................................
 		     If I execute the crush command with all config and args data specified
-		     but cssdir_out specifying a wrong dir
+		     but csscrush_out specifying a wrong dir
 		*/
-		$config = ['cssdir_out'=>'Wish/You/Were/Here', 'cssdir_in'=>self::CSSDIR_IN];
+		$config = ['csscrush_out'=>'Wish/You/Were/Here', 'csscrush_in'=>self::CSSCRUSH_IN];
 		$args = [0 => 'crush', 'site'=>'dummy'];
 		$qkrun = new Tigrez\QKRun\QKRun($config, $args, $output);
 		$lines = $output->get();
@@ -138,14 +140,14 @@ class testQKRun implements Tigrez\IExpect\ITest{
 		/* ... the command will fail */
 		$I->expect($qkrun->getStatus())->equals(false);
 		
-		/* ... with a message about the cssdir_in value not being a directory */
-		$I->Expect($lines[0])->caseInsensitive()->contains('cssdir_out');
+		/* ... with a message about the csscrush_in value not being a directory */
+		$I->Expect($lines[0])->caseInsensitive()->contains('csscrush_out');
 		$I->Expect($lines[0])->caseInsensitive()->contains('not a valid dir');
 		
 		/* I expect that..........................................................................................
 		     If I execute the crush command with all config and args data specified
 		*/
-		$config = ['cssdir_out'=>self::CSSDIR_OUT, 'cssdir_in'=>self::CSSDIR_IN];
+		$config = ['csscrush_out'=>self::CSSCRUSH_OUT, 'csscrush_in'=>self::CSSCRUSH_IN];
 		$args = [0 => 'crush', 'site'=>'dummy'];
 		$qkrun = new Tigrez\QKRun\QKRun($config, $args, $output);
 		$lines = $output->get();
@@ -154,18 +156,18 @@ class testQKRun implements Tigrez\IExpect\ITest{
 		$I->expect($qkrun->getStatus())->equals(true);
 		
 		/* ... and the crushed files are there */
-		$I->expect(self::CSSDIR_OUT.'001-min.css')->isFile();
-		$I->expect(self::CSSDIR_OUT.'002-min.css')->isFile();
-		$I->expect(self::CSSDIR_OUT.'003-min.css')->isFile();
-		$I->expect(self::CSSDIR_OUT.'.csscrush')->isFile();
+		$I->expect(self::CSSCRUSH_OUT.'001-min.css')->isFile();
+		$I->expect(self::CSSCRUSH_OUT.'002-min.css')->isFile();
+		$I->expect(self::CSSCRUSH_OUT.'003-min.css')->isFile();
+		$I->expect(self::CSSCRUSH_OUT.'.csscrush')->isFile();
 
-		$minifiedSize = filesize(self::CSSDIR_OUT.'001-min.css');
+		$minifiedSize = filesize(self::CSSCRUSH_OUT.'001-min.css');
 		
 		/* I expect that..........................................................................................
 		     If I execute the crush command with all config and args data specified
 		     and the optional arg --nominify specified
 		*/
-		$config = ['cssdir_out'=>self::CSSDIR_OUT, 'cssdir_in'=>self::CSSDIR_IN];
+		$config = ['csscrush_out'=>self::CSSCRUSH_OUT, 'csscrush_in'=>self::CSSCRUSH_IN];
 		$args = [0 => 'crush', 'nominify'=>true,  'site'=>'dummy'];
 		$qkrun = new Tigrez\QKRun\QKRun($config, $args, $output);
 		$lines = $output->get();
@@ -175,7 +177,7 @@ class testQKRun implements Tigrez\IExpect\ITest{
 				
 		//var_dump($lines);
 		/* ... and the crushed file 001-min.css to be larger then its minified version */
-		$I->expect($minifiedSize<filesize(self::CSSDIR_OUT.'001.css'))->equals(true);
+		$I->expect($minifiedSize<filesize(self::CSSCRUSH_OUT.'001.css'))->equals(true);
 				
 	}
 	
@@ -187,7 +189,7 @@ class testQKRun implements Tigrez\IExpect\ITest{
 			If I execute the jsmin command with no site context
 		*/
 		$args = [0 => 'minify'];
-		$config = ['jsdir_in'=>'somedir', 'jsdir_out'=>'somedir'];
+		$config = ['jsmin_in'=>'somedir', 'jsmin_out'=>'somedir'];
 		$qkrun = new Tigrez\QKRun\QKRun($config, $args, $output);
 
 		/* ... the command will fail */
@@ -211,24 +213,24 @@ class testQKRun implements Tigrez\IExpect\ITest{
 	
 		/* I expect that..........................................................................................
 		     If I execute the minify command with all config and args data specified
-		     except the jsdir_in config parameter
+		     except the jsmin_in config parameter
 		*/
-		$config = ['jsdir_out'=>self::JSDIR_OUT];
+		$config = ['jsmin_out'=>self::JSMIN_OUT];
 		$args = [0 => 'minify',  'site'=>'dummy'];
 		$qkrun = new Tigrez\QKRun\QKRun($config, $args, $output);
 		$lines = $output->get();
 
 		$I->expect($qkrun->getStatus())->equals(false);
 		
-		/* ... with a message about missing the jsdir_in config setting */
+		/* ... with a message about missing the jsmin_in config setting */
 		$I->Expect($lines[0])->caseInsensitive()->contains('missing');
-		$I->Expect($lines[0])->caseInsensitive()->contains('jsdir_in');
+		$I->Expect($lines[0])->caseInsensitive()->contains('jsmin_in');
 		
 		/* I expect that..........................................................................................
 		     If I execute the minify command with all config and args data specified
-		     except the jsdir_out config setting
+		     except the jsmin_out config setting
 		*/
-		$config = ['jsdir_in'=>self::JSDIR_IN];
+		$config = ['jsmin_in'=>self::JSMIN_IN];
 		$args = [0 => 'minify', 'site'=>'dummy'];
 		$qkrun = new Tigrez\QKRun\QKRun($config, $args, $output);
 		$lines = $output->get();
@@ -236,15 +238,15 @@ class testQKRun implements Tigrez\IExpect\ITest{
 		/* ... the command will fail */
 		$I->expect($qkrun->getStatus())->equals(false);
 		
-		/* ... with a message about missing the jsdir_out config setting */
+		/* ... with a message about missing the jsmin_out config setting */
 		$I->Expect($lines[0])->caseInsensitive()->contains('missing');
-		$I->Expect($lines[0])->caseInsensitive()->contains('jsdir_out');
+		$I->Expect($lines[0])->caseInsensitive()->contains('jsmin_out');
 
 		/* I expect that..........................................................................................
 		     If I execute the minify  command with all config and args data specified
-		     but jsdir_in specifying a wrong dir
+		     but jsmin_in specifying a wrong dir
 		*/
-		$config = ['jsdir_out'=>self::JSDIR_OUT, 'jsdir_in'=>'I/Donot/Exist'];
+		$config = ['jsmin_out'=>self::JSMIN_OUT, 'jsmin_in'=>'I/Donot/Exist'];
 		$args = [0 => 'minify', 'site'=>'dummy'];
 		$qkrun = new Tigrez\QKRun\QKRun($config, $args, $output);
 		$lines = $output->get();
@@ -252,16 +254,16 @@ class testQKRun implements Tigrez\IExpect\ITest{
 		/* ... the command will fail */
 		$I->expect($qkrun->getStatus())->equals(false);
 		
-		/* ... with a message about the jsdir_in value not being a directory */
-		$I->Expect($lines[0])->caseInsensitive()->contains('jsdir_in');
+		/* ... with a message about the jsmin_in value not being a directory */
+		$I->Expect($lines[0])->caseInsensitive()->contains('jsmin_in');
 		$I->Expect($lines[0])->caseInsensitive()->contains('not a valid dir');
 		
 
 		/* I expect that..........................................................................................
 		     If I execute the minify command with all config and args data specified
-		     but jsdir_out specifying a wrong dir
+		     but jsmin_out specifying a wrong dir
 		*/
-		$config = ['jsdir_out'=>'Wish/You/Were/Here', 'jsdir_in'=>self::JSDIR_IN];
+		$config = ['jsmin_out'=>'Wish/You/Were/Here', 'jsmin_in'=>self::JSMIN_IN];
 		$args = [0 => 'minify', 'site'=>'dummy'];
 		$qkrun = new Tigrez\QKRun\QKRun($config, $args, $output);
 		$lines = $output->get();
@@ -269,14 +271,14 @@ class testQKRun implements Tigrez\IExpect\ITest{
 		/* ... the command will fail */
 		$I->expect($qkrun->getStatus())->equals(false);
 
-		/* ... with a message about the jsdir_in value not being a directory */
-		$I->Expect($lines[0])->caseInsensitive()->contains('jsdir_out');
+		/* ... with a message about the jsmin_in value not being a directory */
+		$I->Expect($lines[0])->caseInsensitive()->contains('jsmin_out');
 		$I->Expect($lines[0])->caseInsensitive()->contains('not a valid dir');
 		
 		/* I expect that..........................................................................................
 		     If I execute the minify command with all config and args data specified
 		*/
-		$config = ['jsdir_out'=>self::JSDIR_OUT, 'jsdir_in'=>self::JSDIR_IN];
+		$config = ['jsmin_out'=>self::JSMIN_OUT, 'jsmin_in'=>self::JSMIN_IN];
 		$args = [0 => 'minify', 'site'=>'dummy'];
 		$qkrun = new Tigrez\QKRun\QKRun($config, $args, $output);
 		$lines = $output->get();
@@ -285,9 +287,9 @@ class testQKRun implements Tigrez\IExpect\ITest{
 		$I->expect($qkrun->getStatus())->equals(true);
 		
 		/* ... and the minified files are there */
-		$I->expect(self::JSDIR_OUT.'001-min.js')->isFile();
-		$I->expect(self::JSDIR_OUT.'002-min.js')->isFile();
-		$I->expect(self::JSDIR_OUT.'003-min.js')->isFile();
+		$I->expect(self::JSMIN_OUT.'001-min.js')->isFile();
+		$I->expect(self::JSMIN_OUT.'002-min.js')->isFile();
+		$I->expect(self::JSMIN_OUT.'003-min.js')->isFile();
 				
 	}
 	
@@ -332,7 +334,7 @@ class testQKRun implements Tigrez\IExpect\ITest{
 
 		$I->expect($qkrun->getStatus())->equals(false);
 		
-		/* ... with a message about missing the cssdir_in config setting */
+		/* ... with a message about missing the csscrush_in config setting */
 		$I->Expect($lines[0])->caseInsensitive()->contains('missing');
 		$I->Expect($lines[0])->caseInsensitive()->contains('cssconc_in');
 		
@@ -340,14 +342,14 @@ class testQKRun implements Tigrez\IExpect\ITest{
 		     If I execute the concss command with all config and args data specified
 		     except the cssconc_out config parameter
 		*/
-		$config = ['cssconc_in'=>self::CSSDIR_OUT,'cssconc_name'=>self::CSSDIR_CONNAME ,];
+		$config = ['cssconc_in'=>self::CSSCRUSH_OUT,'cssconc_name'=>self::CSSDIR_CONNAME ,];
 		$args = [0 => 'concss', 'site'=>'dummy'];
 		$qkrun = new Tigrez\QKRun\QKRun($config, $args, $output);
 		$lines = $output->get();
 
 		$I->expect($qkrun->getStatus())->equals(false);
 		
-		/* ... with a message about missing the cssdir_in config setting */
+		/* ... with a message about missing the csscrush_in config setting */
 		$I->Expect($lines[0])->caseInsensitive()->contains('missing');
 		$I->Expect($lines[0])->caseInsensitive()->contains('cssconc_out');
 		
@@ -355,7 +357,7 @@ class testQKRun implements Tigrez\IExpect\ITest{
 		     If I execute the concss command with all config and args data specified
 		     except the cssconc_name config parameter
 		*/
-		$config = ['cssconc_in'=>self::CSSDIR_OUT,
+		$config = ['cssconc_in'=>self::CSSCRUSH_OUT,
 				   'cssconc_out'=>self::CSSDIR_CON ];
 		$args = [0 => 'concss', 'site'=>'dummy'];
 		$qkrun = new Tigrez\QKRun\QKRun($config, $args, $output);
@@ -363,7 +365,7 @@ class testQKRun implements Tigrez\IExpect\ITest{
 
 		$I->expect($qkrun->getStatus())->equals(false);
 		
-		/* ... with a message about missing the cssdir_in config setting */
+		/* ... with a message about missing the csscrush_in config setting */
 		$I->Expect($lines[0])->caseInsensitive()->contains('missing');
 		$I->Expect($lines[0])->caseInsensitive()->contains('cssconc_name');
 		
@@ -380,7 +382,7 @@ class testQKRun implements Tigrez\IExpect\ITest{
 
 		$I->expect($qkrun->getStatus())->equals(false);
 		
-		/* ... with a message about missing the cssdir_in config setting */
+		/* ... with a message about missing the csscrush_in config setting */
 		$I->Expect($lines[0])->caseInsensitive()->contains('not a valid dir');
 		$I->Expect($lines[0])->caseInsensitive()->contains('cssconc_in');
 		
@@ -397,14 +399,14 @@ class testQKRun implements Tigrez\IExpect\ITest{
 
 		$I->expect($qkrun->getStatus())->equals(false);
 		
-		/* ... with a message about missing the cssdir_in config setting */
+		/* ... with a message about missing the csscrush_in config setting */
 		$I->Expect($lines[0])->caseInsensitive()->contains('not a valid dir');
 		$I->Expect($lines[0])->caseInsensitive()->contains('cssconc_in');
 		
 		/* I expect that..........................................................................................
 		     If I execute the concss command with all config and args data specified
 		*/
-		$config = [ 'cssconc_in'  =>self::CSSDIR_OUT,
+		$config = [ 'cssconc_in'  =>self::CSSCRUSH_OUT,
 					'cssconc_name'=>self::CSSDIR_CONNAME ,
 					'cssconc_out' =>self::CSSDIR_CON];
 		$args = [0 => 'concss', 'site'=>'dummy'];
@@ -416,7 +418,7 @@ class testQKRun implements Tigrez\IExpect\ITest{
 		/* ... with the concatted file in the target folder */
 		$I->Expect(self::CSSDIR_CON.self::CSSDIR_CONNAME)->isFile();
 		
-		$filesize = $this->countFileSizes(self::CSSDIR_OUT,'css');
+		$filesize = $this->countFileSizes(self::CSSCRUSH_OUT,'css');
 		/* ... and the file has the size of all source files combined */
 		$I->expect(filesize(self::CSSDIR_CON.self::CSSDIR_CONNAME))->equals($filesize);
 
@@ -463,7 +465,7 @@ class testQKRun implements Tigrez\IExpect\ITest{
 
 		$I->expect($qkrun->getStatus())->equals(false);
 		
-		/* ... with a message about missing the jsdir_in config setting */
+		/* ... with a message about missing the jsmin_in config setting */
 		$I->Expect($lines[0])->caseInsensitive()->contains('missing');
 		$I->Expect($lines[0])->caseInsensitive()->contains('jsconc_in');
 		
@@ -471,14 +473,14 @@ class testQKRun implements Tigrez\IExpect\ITest{
 		     If I execute the conjs command with all config and args data specified
 		     except the jsconc_out config parameter
 		*/
-		$config = ['jsconc_in'=>self::JSDIR_OUT,'jsconc_name'=>self::JSDIR_CONNAME ,];
+		$config = ['jsconc_in'=>self::JSMIN_OUT,'jsconc_name'=>self::JSDIR_CONNAME ,];
 		$args = [0 => 'conjs', 'site'=>'dummy'];
 		$qkrun = new Tigrez\QKRun\QKRun($config, $args, $output);
 		$lines = $output->get();
 
 		$I->expect($qkrun->getStatus())->equals(false);
 		
-		/* ... with a message about missing the jsdir_in config setting */
+		/* ... with a message about missing the jsmin_in config setting */
 		$I->Expect($lines[0])->caseInsensitive()->contains('missing');
 		$I->Expect($lines[0])->caseInsensitive()->contains('jsconc_out');
 		
@@ -486,7 +488,7 @@ class testQKRun implements Tigrez\IExpect\ITest{
 		     If I execute the conjs command with all config and args data specified
 		     except the jsconc_name config parameter
 		*/
-		$config = ['jsconc_in'=>self::JSDIR_OUT,
+		$config = ['jsconc_in'=>self::JSMIN_OUT,
 				   'jsconc_out'=>self::JSDIR_CON ,];
 		$args = [0 => 'conjs', 'site'=>'dummy'];
 		$qkrun = new Tigrez\QKRun\QKRun($config, $args, $output);
@@ -494,7 +496,7 @@ class testQKRun implements Tigrez\IExpect\ITest{
 
 		$I->expect($qkrun->getStatus())->equals(false);
 		
-		/* ... with a message about missing the jsdir_in config setting */
+		/* ... with a message about missing the jsmin_in config setting */
 		$I->Expect($lines[0])->caseInsensitive()->contains('missing');
 		$I->Expect($lines[0])->caseInsensitive()->contains('jsconc_name');
 		
@@ -511,7 +513,7 @@ class testQKRun implements Tigrez\IExpect\ITest{
 
 		$I->expect($qkrun->getStatus())->equals(false);
 		
-		/* ... with a message about missing the jsdir_in config setting */
+		/* ... with a message about missing the jsmin_in config setting */
 		$I->Expect($lines[0])->caseInsensitive()->contains('not a valid dir');
 		$I->Expect($lines[0])->caseInsensitive()->contains('jsconc_in');
 		
@@ -528,14 +530,14 @@ class testQKRun implements Tigrez\IExpect\ITest{
 
 		$I->expect($qkrun->getStatus())->equals(false);
 		
-		/* ... with a message about missing the jsdir_in config setting */
+		/* ... with a message about missing the jsmin_in config setting */
 		$I->Expect($lines[0])->caseInsensitive()->contains('not a valid dir');
 		$I->Expect($lines[0])->caseInsensitive()->contains('jsconc_in');
 		
 		/* I expect that..........................................................................................
 		     If I execute the conjs command with all config and args data specified
 		*/
-		$config = [ 'jsconc_in'  =>self::JSDIR_OUT,
+		$config = [ 'jsconc_in'  =>self::JSMIN_OUT,
 					'jsconc_name'=>self::JSDIR_CONNAME ,
 					'jsconc_out' =>self::JSDIR_CON];
 		$args = [0 => 'conjs', 'site'=>'dummy'];
@@ -547,7 +549,7 @@ class testQKRun implements Tigrez\IExpect\ITest{
 		/* ... with the concatted file in the target folder */
 		$I->Expect(self::JSDIR_CON.self::JSDIR_CONNAME)->isFile();
 		
-		$filesize = $this->countFileSizes(self::JSDIR_OUT,'js');
+		$filesize = $this->countFileSizes(self::JSMIN_OUT,'js');
 		/* ... and the file has the size of all source files combined */
 		$I->expect(filesize(self::JSDIR_CON.self::JSDIR_CONNAME))->equals($filesize);
 
@@ -626,8 +628,6 @@ class testQKRun implements Tigrez\IExpect\ITest{
 		$I->Expect('site')->isFile();
 		/* ... containing the name of the selected site */
 		$I->Expect(file_get_contents('site'))->equals('site2');
-		//var_dump($lines);
-		
 			
 	}
 	

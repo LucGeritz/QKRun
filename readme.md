@@ -1,7 +1,39 @@
-# QK:Run
-**Version history**   
-1.1.0 Added watch functionality
-1.0.0 First usable version
+<span style="font-size:40px; color:crimson">QK:Run</span>
+
+    
+# Version history  
+ 
+## 1.2.0 Big changes..
+Compatibilty broken!
+
+#### jsflow and cssflow options
+The flow for the run and watch commands can be changed by the `--jsflow` and `--cssflow` option. Default for both is `MC`, meaning *Minify then Concat*. Specify `CM` for *Concat then Minify*. Note that *minify* in the context of CSS means *crush* which is *preprocess by csscrush and minify*. And even if minify is surpressed by the `--nominify` option we still call this step *minify*! Also note that you can't just switch there parameters. You'll probably want to change your dirs in the config file since each steps assumes the inputfiles in a different dir
+
+#### Settings Namechange, warning: breaks compatibility! 
+Out of consistency the setting `cssdir_in` and `cssdir_out` is changed to `csscrunch_in` and `csscrunch_out`. The name is now related to the process-step using it.   
+Same goes for `jsdir_in` and `jsdir_out` becoming `jsmin_in` and `jsmin_out`.
+
+| Old setting | New setting |
+|-------------|-------------|
+| cssdir_in | csscrunch_in |
+| cssdir_out | csscrunch_out |
+| jsdir_in | jsmin_in |
+| jsdir_out | jsmin_out |
+
+
+
+
+#### Others 
+- Before crushing css the csscrunch_out is emptied
+- Before concatting css the cssconc_out is emptied
+- Before minifying js the jsmin_out is emptied
+- Before concatting js the jsconc_out is emptied
+   
+## 1.1.0 Watching!
+Added watch functionality   
+   
+## 1.0.0 
+First usable version
 
 ## What is it?
 QK:Run is a little taskrunner that automates the processing of your project's javascript and css-files.
@@ -49,10 +81,10 @@ in the global file then we'll need to create a `dogs.config.php` and a `birds.co
 Typically it will look something like this:    
 
     return [
-       'cssdir_in'   => '/mysites/dogs/css/',
-       'cssdir_out'  => '/mysites/dogs/cssmin/',
-       'jsdir_in'    => '/mysites/dogs/js/',
-       'jsdir_out'   => '/mysites/dogs/jsmin/',
+       'csscrunch_in'   => '/mysites/dogs/css/',
+       'csscrunch_out'  => '/mysites/dogs/cssmin/',
+       'jsmin_in'    => '/mysites/dogs/js/',
+       'jsmin_out'   => '/mysites/dogs/jsmin/',
        'jsconc_in'   => '/mysites/dogs/jsmin/',
        'jsconc_out'  => '/mysites/dogs/jscon/',
        'jsconc_name' => 'dogs-min.js',
@@ -61,14 +93,14 @@ Typically it will look something like this:
        'cssconc_name'=> 'dogs-min.css',
     ];
 
-- `cssdir_in` defines where the input css files can be found
-- `cssdir_out` defines where the 'crushed' css files are stored
-- `jsdir_in` defines where the javascript files can be found
-- `jsdir_out` defines where the minified javascript files are stored
-- `jsconc_in` defines where the javascript files to concat are stored, typically the same as jsdir_out
+- `csscrunch_in` defines where the input css files for the crunch step can be found
+- `csscrunch_out` defines where the 'crushed' css files are stored
+- `jsmin_in` defines where the javascript files for the minify step can be found
+- `jsmin_out` defines where the minified javascript files are stored
+- `jsconc_in` defines where the javascript files to concat are stored, typically the same as jsmin_out
 - `jsconc_out` defines where the concatted javascript file is stored
 - `jsconc_name` is the name of the concatted javascript file
-- `cssconc_in` defines where the css files to concat are stored, typically the same as cssdir_out
+- `cssconc_in` defines where the css files to concat are stored, typically the same as csscrunch_out
 - `cssconc_out` defines where the concatted css file is stored
 - `cssconc_name` is the name of the concatted css file
 
@@ -82,12 +114,12 @@ select the site working on. Must be one of the acronyms in `sites`.
 show available commands
 
 **crush**    
-*crushes* the css-files in `cssdir_in` to `cssdir_out`. If `xxx.css` is the input file the output file names becomes `xxx-min.css` if minified or stays `xxx.css` if no minification.  
+*crushes* the css-files in `csscrunch_in` to `csscrunch_out`. If `xxx.css` is the input file the output file names becomes `xxx-min.css` if minified or stays `xxx.css` if no minification.  
 
 `--nominify` specify this if you don't want minification. Minification is the default.     
 
 **minify**    
-minify your javascript files in `jsdir_in` and write them to `jsdir_out`.
+minify your javascript files in `jsmin_in` and write them to `jsmin_out`.
 
 **jscon**    
 concat your javascript files in `jsconc_in` to one file in `jsconc_out` with the name `jsconc_name`. 
@@ -101,10 +133,10 @@ concat your css files in `cssconc_in` to one file in `cssconc_out` with the name
 
 **run**         
 this is a combination of crush, minify, concss and conjs. See the individual commands.
+`--jsflow` Default flow is MC, Minify then Concat, use CM for Concat then Minify.   
+`--cssflow` Default flow is MC, Minify/Crush then Concat, use CM for Concat then Minify/Crush.
 
 **watch**
-watches your cssdir_in and jsdir_in for changes.
-
-## Future enhancements    
-- Implementation of commands by interfaces to allow for to switch to your own prefered module for implementation of a given command.
-- Unit test functionality
+watches your css and js for changes.    
+`--jsflow` Default flow is MC, Minify then Concat, use CM for Concat then Minify.   
+`--cssflow` Default flow is MC, Minify/Crush then Concat, use CM for Concat then Minify/Crush.

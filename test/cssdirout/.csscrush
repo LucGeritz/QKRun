@@ -1,9 +1,7 @@
 {
     "001-min.css": {
-        "imports": [
-
-        ],
-        "datem_sum": 1509112422,
+        "imports": [],
+        "datem_sum": 1550479344,
         "options": {
             "minify": true,
             "output_dir": "cssdirout\/",
@@ -11,9 +9,7 @@
             "formatter": null,
             "versioning": true,
             "boilerplate": true,
-            "vars": [
-
-            ],
+            "vars": [],
             "cache": true,
             "context": null,
             "asset_dir": null,
@@ -21,19 +17,15 @@
             "vendor_target": "all",
             "rewrite_import_urls": true,
             "plugins": null,
-            "settings": [
-
-            ],
+            "settings": [],
             "stat_dump": false,
             "source_map": false,
             "newlines": "use-platform"
         }
     },
     "002-min.css": {
-        "imports": [
-
-        ],
-        "datem_sum": 1508777142,
+        "imports": [],
+        "datem_sum": 1550479344,
         "options": {
             "minify": true,
             "output_dir": "cssdirout\/",
@@ -41,9 +33,7 @@
             "formatter": null,
             "versioning": true,
             "boilerplate": true,
-            "vars": [
-
-            ],
+            "vars": [],
             "cache": true,
             "context": null,
             "asset_dir": null,
@@ -51,19 +41,15 @@
             "vendor_target": "all",
             "rewrite_import_urls": true,
             "plugins": null,
-            "settings": [
-
-            ],
+            "settings": [],
             "stat_dump": false,
             "source_map": false,
             "newlines": "use-platform"
         }
     },
     "003-min.css": {
-        "imports": [
-
-        ],
-        "datem_sum": 1508777142,
+        "imports": [],
+        "datem_sum": 1550479344,
         "options": {
             "minify": true,
             "output_dir": "cssdirout\/",
@@ -71,9 +57,7 @@
             "formatter": null,
             "versioning": true,
             "boilerplate": true,
-            "vars": [
-
-            ],
+            "vars": [],
             "cache": true,
             "context": null,
             "asset_dir": null,
@@ -81,19 +65,15 @@
             "vendor_target": "all",
             "rewrite_import_urls": true,
             "plugins": null,
-            "settings": [
-
-            ],
+            "settings": [],
             "stat_dump": false,
             "source_map": false,
             "newlines": "use-platform"
         }
     },
     "001.css": {
-        "imports": [
-
-        ],
-        "datem_sum": 1509112422,
+        "imports": [],
+        "datem_sum": 1550479344,
         "options": {
             "minify": false,
             "output_dir": "cssdirout\/",
@@ -101,9 +81,7 @@
             "formatter": null,
             "versioning": true,
             "boilerplate": true,
-            "vars": [
-
-            ],
+            "vars": [],
             "cache": true,
             "context": null,
             "asset_dir": null,
@@ -111,19 +89,15 @@
             "vendor_target": "all",
             "rewrite_import_urls": true,
             "plugins": null,
-            "settings": [
-
-            ],
+            "settings": [],
             "stat_dump": false,
             "source_map": false,
             "newlines": "use-platform"
         }
     },
     "002.css": {
-        "imports": [
-
-        ],
-        "datem_sum": 1508777142,
+        "imports": [],
+        "datem_sum": 1550479344,
         "options": {
             "minify": false,
             "output_dir": "cssdirout\/",
@@ -131,9 +105,7 @@
             "formatter": null,
             "versioning": true,
             "boilerplate": true,
-            "vars": [
-
-            ],
+            "vars": [],
             "cache": true,
             "context": null,
             "asset_dir": null,
@@ -141,19 +113,15 @@
             "vendor_target": "all",
             "rewrite_import_urls": true,
             "plugins": null,
-            "settings": [
-
-            ],
+            "settings": [],
             "stat_dump": false,
             "source_map": false,
             "newlines": "use-platform"
         }
     },
     "003.css": {
-        "imports": [
-
-        ],
-        "datem_sum": 1508777142,
+        "imports": [],
+        "datem_sum": 1550479344,
         "options": {
             "minify": false,
             "output_dir": "cssdirout\/",
@@ -161,9 +129,7 @@
             "formatter": null,
             "versioning": true,
             "boilerplate": true,
-            "vars": [
-
-            ],
+            "vars": [],
             "cache": true,
             "context": null,
             "asset_dir": null,
@@ -171,9 +137,79 @@
             "vendor_target": "all",
             "rewrite_import_urls": true,
             "plugins": null,
-            "settings": [
-
-            ],
+            "settings": [],
+            "stat_dump": false,
+            "source_map": false,
+            "newlines": "use-platform"
+        }
+    },
+    "001-min-min.css": {
+        "imports": [],
+        "datem_sum": 1550998708,
+        "options": {
+            "minify": true,
+            "output_dir": "C:\\xampp\\htdocs\\QKRun\\test\\cssdirout\\",
+            "output_file": "001-min-min",
+            "formatter": null,
+            "versioning": true,
+            "boilerplate": true,
+            "vars": [],
+            "cache": true,
+            "context": null,
+            "asset_dir": null,
+            "doc_root": null,
+            "vendor_target": "all",
+            "rewrite_import_urls": true,
+            "plugins": null,
+            "settings": [],
+            "stat_dump": false,
+            "source_map": false,
+            "newlines": "use-platform"
+        }
+    },
+    "002-min-min.css": {
+        "imports": [],
+        "datem_sum": 1550998708,
+        "options": {
+            "minify": true,
+            "output_dir": "C:\\xampp\\htdocs\\QKRun\\test\\cssdirout\\",
+            "output_file": "002-min-min",
+            "formatter": null,
+            "versioning": true,
+            "boilerplate": true,
+            "vars": [],
+            "cache": true,
+            "context": null,
+            "asset_dir": null,
+            "doc_root": null,
+            "vendor_target": "all",
+            "rewrite_import_urls": true,
+            "plugins": null,
+            "settings": [],
+            "stat_dump": false,
+            "source_map": false,
+            "newlines": "use-platform"
+        }
+    },
+    "003-min-min.css": {
+        "imports": [],
+        "datem_sum": 1550998708,
+        "options": {
+            "minify": true,
+            "output_dir": "C:\\xampp\\htdocs\\QKRun\\test\\cssdirout\\",
+            "output_file": "003-min-min",
+            "formatter": null,
+            "versioning": true,
+            "boilerplate": true,
+            "vars": [],
+            "cache": true,
+            "context": null,
+            "asset_dir": null,
+            "doc_root": null,
+            "vendor_target": "all",
+            "rewrite_import_urls": true,
+            "plugins": null,
+            "settings": [],
             "stat_dump": false,
             "source_map": false,
             "newlines": "use-platform"

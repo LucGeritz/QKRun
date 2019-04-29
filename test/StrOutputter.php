@@ -5,6 +5,7 @@ class StrOutputter implements Tigrez\QKRun\IOutputter{
 	public function output($msg){
 		$this->lines[]=$msg;	
 	}
+	
 	public function get($remove_logo = true){
 		$lines = $this->lines;
 		
